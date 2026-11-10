@@ -1,4 +1,4 @@
-import { VStack, HStack, Text, Spacer, Button, Widget } from 'scripting'
+import { VStack, HStack, Text, Spacer, Button, Widget, Script } from 'scripting'
 import { load, rows, Row, Kind } from './model'
 import { Refresh } from './app_intents'
 function color(row: Row) { return row.unlimited ? 'systemGreen' : row.value === null ? 'secondaryLabel' : row.value < 15 ? 'systemRed' : row.value < 35 ? 'systemOrange' : 'systemGreen' }
@@ -16,8 +16,9 @@ async function main() {
  const status=result.failed ? (result.at ? '离线缓存 '+stamp : '获取失败') : '获取 '+stamp
  Widget.present(<VStack alignment="leading" spacing={large ? 5 : 2} padding={10} widgetBackground={{light:'#F4F6FA',dark:'#111827'}}>
   <HStack><Text font={large ? 16 : 13} foregroundStyle="label">{kind === 'ai' ? 'AI 额度 · 剩余' : '节点流量 · 剩余'}</Text><Spacer/><Text font={9} foregroundStyle={result.failed ? 'systemOrange' : 'secondaryLabel'}>{status}</Text><Button title="↻" intent={Refresh(undefined)} buttonStyle="plain" /></HStack>
-  {kind === 'ai' && !large ? <HStack alignment="top" spacing={12}><VStack alignment="leading" spacing={3}>{data.slice(0,5).map((row)=><Line row={row} large={false}/>)}</VStack><VStack alignment="leading" spacing={3}>{data.slice(5).map((row)=><Line row={row} large={false}/>)}</VStack></HStack> : <VStack alignment="leading" spacing={large ? 8 : 3}>{data.map((row)=><Line row={row} large={large}/>)}</VStack>}
+  {kind === 'ai' && !large ? <HStack alignment="top" spacing={12}><VStack alignment="leading" spacing={3}>{data.slice(0,5).map((row)=><Line key={row.name} row={row} large={false}/>)}</VStack><VStack alignment="leading" spacing={3}>{data.slice(5).map((row)=><Line key={row.name} row={row} large={false}/>)}</VStack></HStack> : <VStack alignment="leading" spacing={large ? 8 : 3}>{data.map((row)=><Line key={row.name} row={row} large={large}/>)}</VStack>}
   <Spacer/>
  </VStack>, {policy:'after',date:new Date(Date.now()+30*60*1000)})
+ Script.exit()
 }
 void main()

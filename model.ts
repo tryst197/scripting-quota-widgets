@@ -1,4 +1,4 @@
-import { Keychain, Storage } from 'scripting'
+import { Keychain, Storage, fetch } from 'scripting'
 export type Kind = 'ai' | 'server'
 export type Row = { name: string, value: number | null, detail: string, unlimited?: boolean }
 const num = (x: any): number | null => typeof x === 'number' && Number.isFinite(x) ? x : null
