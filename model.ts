@@ -1,5 +1,6 @@
 import { Keychain, Storage, fetch } from 'scripting'
 export type Kind = 'ai' | 'server'
+export const DEFAULT_URLS: Record<Kind, string> = { ai: 'https://quota.72593.top/quotas.json', server: 'https://quota.72593.top/servers.json' }
 export type Row = { name: string, value: number | null, detail: string, unlimited?: boolean }
 const num = (x: any): number | null => typeof x === 'number' && Number.isFinite(x) ? x : null
 const pct = (x: any) => { const n = num(x); return n === null ? null : Math.max(0, Math.min(100, n)) }
@@ -24,7 +25,7 @@ export function rows(kind: Kind, data: any): Row[] {
 export async function load(kind: Kind) {
  const key='quota.'+kind; const cached:any=Storage.get(key+'.cache');
  try {
-  const url=Storage.get<string>(key+'.url'); if (!url || !/^https:\/\//i.test(url)) throw Error('config')
+  const url=Storage.get<string>(key+'.url') ?? DEFAULT_URLS[kind]; if (!url || !/^https:\/\//i.test(url)) throw Error('config')
   const token=Keychain.get(key+'.token'); const headers: Record<string,string> = {'Cache-Control':'no-cache'}; if(token) headers.Authorization='Bearer '+token
   const response=await fetch(url,{headers,timeout:10,handleRedirect:async()=>null}); if(!response.ok) throw Error('http')
   const data=await response.json(); if(!data || !Array.isArray(data.cards)) throw Error('schema')
